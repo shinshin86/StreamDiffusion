@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from "react";
-import { TextField, Grid } from "@mui/material";
+import { TextField, Grid, Button } from "@mui/material";
 
 function App() {
   const [inputPrompt, setInputPrompt] = useState("");
   const [lastPrompt, setLastPrompt] = useState("");
   const [images, setImages] = useState(Array(16).fill("images/white.jpg"));
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   const calculateEditDistance = (a: string, b: string) => {
     if (a.length === 0) return b.length;
@@ -101,7 +102,11 @@ function App() {
           style={{ maxWidth: "60rem", maxHeight: "70%" }}
         >
           {images.map((image, index) => (
-            <Grid item xs={3} key={index}>
+            <Grid item xs={3} key={index}
+              onMouseEnter={() => setHoveredId(index)}
+              onMouseLeave={() => setHoveredId(null)}
+              style={{ position: 'relative' }}
+            >
               <img
                 src={image}
                 alt={`Generated ${index}`}
@@ -113,6 +118,25 @@ function App() {
                   borderRadius: "10px",
                 }}
               />
+              {hoveredId === index && (
+                <Button
+                  href={image}
+                  download={`downloaded_image_${index}.jpg`}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    minWidth: '30px',
+                    minHeight: '30px',
+                    padding: 0,
+                    backgroundColor: 'white',
+                    borderRadius: '50%',
+                    border: 'none',
+                  }}
+                >
+                  <span style={{ fontSize: '20px', color: 'black' }}>⬇️</span>
+                </Button>
+              )}
             </Grid>
           ))}
         </Grid>
